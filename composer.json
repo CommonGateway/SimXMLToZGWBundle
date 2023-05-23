@@ -9,21 +9,25 @@
         "conduction",
         "symfony",
         "common-gateway-plugin",
-        "pet store"
+        "Sim",
+        "XML",
+        "SimXML",
+        "ZGW"
     ],
     "homepage": "https://commongateway.nl",
     "license": "EUPL-1.2",
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.4",
-        "commongateway/corebundle": "^1.0.51"
+        "commongateway/corebundle": "^1.0.89",
+        "common-gateway/zgw-bundle": "^0.1"
     },
     "require-dev": {
         "symfony/dependency-injection": "~3.4|~4.1|~5.0"
     },
     "autoload": {
         "psr-4": {
-            "CommonGateway\\PetStoreBundle\\": "src/"
+            "CommonGateway\\SimXMLToZGWBundle\\": "src/"
         }
     }
 }

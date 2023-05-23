@@ -1,4 +1,4 @@
-# CommonGateway\PetStoreBundle
+# CommonGateway\SimXMLToZGWBundle
 
 *   [Service\InstallationService](Service/InstallationService.md)
-*   [Service\PetStoreService](Service/PetStoreService.md)
+*   [Service\SimXMLToZGWService](Service/SimXMLToZGWService.md)

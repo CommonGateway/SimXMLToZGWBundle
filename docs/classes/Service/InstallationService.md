@@ -1,4 +1,4 @@
-# CommonGateway\PetStoreBundle\Service\InstallationService
+# CommonGateway\SimXMLToZGWBundle\Service\InstallationService
 
 ## Implements:
 

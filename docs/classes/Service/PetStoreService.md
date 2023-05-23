@@ -1,13 +1,13 @@
-# CommonGateway\PetStoreBundle\Service\PetStoreService
+# CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService
 
 ## Methods
 
 | Name | Description |
 |------|-------------|
 |[\_\_construct](#petstoreservice__construct)||
-|[petStoreHandler](#petstoreservicepetstorehandler)|An example handler that is triggered by an action.|
+|[simXMLToZGWHandler](#petstoreservicepetstorehandler)|An example handler that is triggered by an action.|
 
-### PetStoreService::\_\_construct
+### SimXMLToZGWService::\_\_construct
 
 **Description**
 
@@ -25,12 +25,12 @@
 
 <hr />
 
-### PetStoreService::petStoreHandler
+### SimXMLToZGWService::simXMLToZGWHandler
 
 **Description**
 
 ```php
-public petStoreHandler (array $data, array $configuration)
+public simXMLToZGWHandler (array $data, array $configuration)
 ```
 
 An example handler that is triggered by an action.

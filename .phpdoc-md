@@ -1,10 +1,10 @@
 <?php
 return (object)[
-    'rootNamespace' => 'CommonGateway\PetStoreBundle',
+    'rootNamespace' => 'CommonGateway\SimXMLToZGWBundle',
     'destDirectory' => 'docs/classes',
     'format' => 'github',
     'classes' => [
-        '\CommonGateway\PetStoreBundle\Service\InstallationService',
-        '\CommonGateway\PetStoreBundle\Service\PetStoreService'
+        '\CommonGateway\SimXMLToZGWBundle\Service\InstallationService',
+        '\CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService'
     ],
 ];

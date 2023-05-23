@@ -1,4 +1,4 @@
-# PetStoreBundle [![Codacy Badge](https://app.codacy.com/project/badge/Grade/980ea2efc85a427ea909518f29506ff6)](https://app.codacy.com/gh/CommonGateway/SimXMLToZGWBundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_grade)
+# SimXMLToZGWBundle [![Codacy Badge](https://app.codacy.com/project/badge/Grade/980ea2efc85a427ea909518f29506ff6)](https://app.codacy.com/gh/CommonGateway/SimXMLToZGWBundle/dashboard?utm_source=gh\&utm_medium=referral\&utm_content=\&utm_campaign=Badge_grade)
 
 This repository is for creating PHP Symfony flex bundles. The Common Gateway ecosystem  uses this template for rapid development to extend Gateway functionlity outside of the Core.
 
@@ -61,9 +61,9 @@ This template is for rapid Symfony bundle development and meant as a model to ba
     > Note: this is kebab-case. Also read: [naming your package](https://packagist.org/about#naming-your-package)
 
     *   Check the autoload field to be set accordingly.
-    *   Open PetStoreBundle.php and change the Bundle `name` and `namespace`. The namespace should be the same as your package name in `composer.json` but in CamelCase. So `common-gateway/pet-store-bundle` becomes `CommonGateway/SimXMLToZGWBundle`
+    *   Open SimXMLToZGWBundle.php and change the Bundle `name` and `namespace`. The namespace should be the same as your package name in `composer.json` but in CamelCase. So `common-gateway/pet-store-bundle` becomes `CommonGateway/SimXMLToZGWBundle`
     *   Rename the `/Service` and `/ActionHandler` accordingly (or delete if not used).
-    *   Rename the `/DependencyInjection/PetStoreExtension.php` to your `BundleNameExtension.php`
+    *   Rename the `/DependencyInjection/SimXMLToZGWExtension.php` to your `BundleNameExtension.php`
     *   Rename the `/Resources/config/services.yaml` namespaces
 
 ### Adding schemas
