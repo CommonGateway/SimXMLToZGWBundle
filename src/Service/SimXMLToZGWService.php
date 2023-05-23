@@ -10,7 +10,6 @@ use App\Event\ActionEvent;
 use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,16 +25,16 @@ class SimXMLToZGWService
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
+    
+    /**
+     * @var GatewayResourceService
+     */
+    private GatewayResourceService $resourceService;
 
     /**
      * @var MappingService
      */
     private MappingService $mappingService;
-
-    /**
-     * @var SymfonyStyle
-     */
-    private SymfonyStyle $io;
 
     /**
      * @var CacheService
@@ -48,11 +47,6 @@ class SimXMLToZGWService
     private LoggerInterface $logger;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private EventDispatcherInterface $eventDispatcher;
-
-    /**
      * @var array
      */
     private array $data;
@@ -61,76 +55,52 @@ class SimXMLToZGWService
      * @var array
      */
     private array $configuration;
+    
+    /**
+     * The plugin name of this plugin.
+     */
+    private const PLUGIN_NAME = 'common-gateway/sim-xml-to-zgw-bundle';
+    
+    /**
+     * The mapping references used in this service.
+     */
+    private const MAPPING_REFS = [
+        "ZdsDocumentToZgwDocument"  => "https://zds.nl/mapping/zds.zdsDocumentToZgwDocument.mapping.json",
+        "SimxmlZaakToZgwZaak"       => "https://simxml.nl/mapping/simxml.simxmlZaakToZgwZaak.mapping.json",
+        "SimxmlZgwZaakToBv03"       => "https://simxml.nl/mapping/simxml.zgwZaakToBv03.mapping.json"
+    ];
+    
+    /**
+     * The schema references used in this service.
+     */
+    private const SCHEMA_REFS = [
+        "ZtcEigenschap"                  => "https://vng.opencatalogi.nl/schemas/ztc.eigenschap.schema.json",
+        "ZtcRolType"                     => "https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json",
+        "ZtcZaakType"                    => "https://vng.opencatalogi.nl/schemas/ztc.zaakType.schema.json",
+        "ZrcZaak"                        => "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json",
+        "ZrcZaakInformatieObject"        => "https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json",
+        "DrcEnkelvoudigInformatieObject" => "https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json"
+    ];
 
     /**
-     * @param EntityManagerInterface   $entityManager  The Entity Manager
-     * @param MappingService           $mappingService The MappingService
-     * @param CacheService             $cacheService   The CacheService
-     * @param EventDispatcherInterface $eventDispatcher The event dispatcher
+     * @param EntityManagerInterface   $entityManager   The Entity Manager
+     * @param GatewayResourceService   $resourceService The Gateway Resource Service.
+     * @param MappingService           $mappingService  The MappingService
+     * @param CacheService             $cacheService    The CacheService
      */
     public function __construct(
         EntityManagerInterface $entityManager,
+        GatewayResourceService $resourceService,
         MappingService $mappingService,
         CacheService $cacheService,
-        LoggerInterface $actionLogger,
-        EventDispatcherInterface $eventDispatcher
+        LoggerInterface $actionLogger
     ) {
-        $this->entityManager = $entityManager;
-        $this->mappingService = $mappingService;
-        $this->cacheService = $cacheService;
-        $this->logger = $actionLogger;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->entityManager    = $entityManager;
+        $this->resourceService  = $resourceService;
+        $this->mappingService   = $mappingService;
+        $this->cacheService     = $cacheService;
+        $this->logger           = $actionLogger;
     }//end __construct()
-
-    /**
-     * Set symfony style in order to output to the console.
-     *
-     * @param SymfonyStyle $io
-     *
-     * @return self
-     */
-    public function setStyle(SymfonyStyle $io): self
-    {
-        $this->io = $io;
-        $this->mappingService->setStyle($io);
-
-        return $this;
-    }//end setStyle()
-
-    /**
-     * Get an entity by reference.
-     *
-     * @param string $reference The reference to look for
-     *
-     * @return Entity|null
-     */
-    public function getEntity(string $reference): ?Entity
-    {
-        $entity = $this->entityManager->getRepository('App:Entity')->findOneBy(['reference' => $reference]);
-        if ($entity === null) {
-            $this->logger->error("No entity found for $reference");
-            isset($this->io) && $this->io->error("No entity found for $reference");
-        }//end if
-
-        return $entity;
-    }//end getEntity()
-
-    /**
-     * Gets mapping for reference.
-     *
-     * @param string $reference The reference to look for
-     *
-     * @return Mapping
-     */
-    public function getMapping(string $reference): Mapping
-    {
-        $mapping = $this->entityManager->getRepository('App:Mapping')->findOneBy(['reference' => $reference]);
-        if ($mapping === null) {
-            $this->logger->error("No mapping found for $reference");
-        }
-
-        return $mapping;
-    }//end getMapping()
 
     /**
      * Creates a response based on content.
@@ -161,7 +131,7 @@ class SimXMLToZGWService
     {
         $this->logger->info('Trying to connect case type properties to existing properties');
 
-        $eigenschapEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.eigenschap.schema.json');
+        $eigenschapEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcEigenschap'], $this::PLUGIN_NAME);
         $eigenschapObjects = [];
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
             $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results'];
@@ -200,7 +170,7 @@ class SimXMLToZGWService
     public function connectRolTypes(array $zaakArray, ObjectEntity $zaakType): array
     {
         $this->logger->info('Trying to connect roles to existing role types');
-        $rolTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json');
+        $rolTypeEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcRolType'], $this::PLUGIN_NAME);
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
         foreach ($zaakArray['rollen'] as $key => $role) {
@@ -240,10 +210,10 @@ class SimXMLToZGWService
     {
         $this->logger->info('Populating document');
 
-        $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
-        $zaakDocumentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json');
-        $documentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
-        $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsDocumentToZgwDocument.mapping.json');
+        $zaakEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZrcZaak'], $this::PLUGIN_NAME);
+        $zaakDocumentEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZrcZaakInformatieObject'], $this::PLUGIN_NAME);
+        $documentEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['DrcEnkelvoudigInformatieObject'], $this::PLUGIN_NAME);
+        $mapping = $this->resourceService->getMapping($this::MAPPING_REFS['ZdsDocumentToZgwDocument'], $this::PLUGIN_NAME);
 
         $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
         $zaakinformatieobjecten = $zaak->getValue('zaakinformatieobjecten');
@@ -287,7 +257,7 @@ class SimXMLToZGWService
     {
         $this->logger->debug('Trying to connect case to existing case type');
 
-        $zaakTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.zaakType.schema.json');
+        $zaakTypeEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcZaakType'], $this::PLUGIN_NAME);
         $zaaktypes = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$zaakTypeEntity->getId()->toString()])['results'];
         if (count($zaaktypes) > 0) {
             $this->logger->debug('Case type found, connecting case to case type');
@@ -350,8 +320,8 @@ class SimXMLToZGWService
         $elementen = new Dot($this->data['body']['SOAP-ENV:Body']['ns2:OntvangenIntakeNotificatie']['Body']['SIMXML']['ELEMENTEN']);
         $this->data['body']['SOAP-ENV:Body']['ns2:OntvangenIntakeNotificatie']['Body']['SIMXML']['ELEMENTEN'] = $elementen->flatten();
 
-        $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
-        $mapping = $this->getMapping('https://simxml.nl/mapping/simxml.simxmlZaakToZgwZaak.mapping.json');
+        $zaakEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZrcZaak'], $this::PLUGIN_NAME);
+        $mapping = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZaakToZgwZaak'], $this::PLUGIN_NAME);
 
         $zaakArray = $this->mappingService->mapping($mapping, $this->data['body']);
 
@@ -371,7 +341,7 @@ class SimXMLToZGWService
             $zaakArray = $this->connectZaakInformatieObjecten($zaakArray, $zaak);
 
             $this->logger->info('Created case with identifier '.$zaakArray['identificatie']);
-            $mappingOut = $this->getMapping('https://simxml.nl/mapping/simxml.zgwZaakToBv03.mapping.json');
+            $mappingOut = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZgwZaakToBv03'], $this::PLUGIN_NAME);
             $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
         } else {
             $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
