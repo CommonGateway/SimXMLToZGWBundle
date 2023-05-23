@@ -4,7 +4,6 @@ namespace CommonGateway\SimXMLToZGWBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
 use CommonGateway\SimXMLToZGWBundle\Service\SimXmlToZgwService;
-use CommonGateway\SimXMLToZGWBundle\Service\ZdsToZgwService;
 
 /**
  * Sim xml to a zgw zaak
