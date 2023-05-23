@@ -1,6 +1,6 @@
 {
     "name": "common-gateway/sim-xml-to-zgw-bundle",
-    "description": "An example package for creating symfony flex bundles as plugins",
+    "description": "Symfony bundle for translating SimXML messages into ZGW objects",
     "type": "symfony-bundle",
     "keywords": [
         "commongateway",
