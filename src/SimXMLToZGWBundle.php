@@ -1,6 +1,6 @@
 <?php
 /**
- * The pet SimXML to ZGW Bundle can translate SimXML messages into ZGW objects
+ * The SimXML to ZGW Bundle can translate SimXML messages into ZGW objects
  *
  * @author  Conduction.nl <info@conduction.nl>
  * @license EUPL-1.2 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
