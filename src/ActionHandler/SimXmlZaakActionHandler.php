@@ -3,7 +3,7 @@
 namespace CommonGateway\SimXMLToZGWBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
-use CommonGateway\SimXMLToZGWBundle\Service\SimXmlToZgwService;
+use CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService;
 
 /**
  * Sim xml to a zgw zaak
