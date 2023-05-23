@@ -198,11 +198,12 @@ class SimXMLToZGWService
 
         return $zaakArray;
     }//end connectRolTypes()
-
+    
     /**
      * Connects ZaakInfromatieObjecten ... @TODO
      *
-     * @param array        $zaakArray The mapped zaak
+     * @param array $zaakArray The mapped zaak
+     * @param ObjectEntity $zaak
      *
      * @return array
      */
@@ -306,15 +307,15 @@ class SimXMLToZGWService
     /**
      * Receives a case and maps it to a ZGW case.
      *
-     * @param array $data   The inbound data for the case
-     * @param array $config The configuration for the action
+     * @param array $data          The inbound data for the case
+     * @param array $configuration The configuration for the action
      *
      * @return array
      */
-    public function zaakActionHandler(array $data, array $config): array
+    public function zaakActionHandler(array $data, array $configuration): array
     {
         $this->logger->info('Populate case');
-        $this->configuration = $config;
+        $this->configuration = $configuration;
         $this->data = $data;
 
         $elementen = new Dot($this->data['body']['SOAP-ENV:Body']['ns2:OntvangenIntakeNotificatie']['Body']['SIMXML']['ELEMENTEN']);

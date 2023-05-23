@@ -36,7 +36,7 @@ class SimXmlZaakActionHandler implements ActionHandlerInterface
             '$id'         => 'https://simxml.nl/simxml.creerzaak.handler.json',
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
             'title'       => 'SimXmlZaak ActionHandler',
-            'description' => 'This is a action ...',
+            'description' => 'This is an action ...',
         ];
     }//end getConfiguration()
 
