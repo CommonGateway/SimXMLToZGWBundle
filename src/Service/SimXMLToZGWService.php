@@ -141,7 +141,7 @@ class SimXMLToZGWService
         $eigenschapEntity  = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcEigenschap'], $this::PLUGIN_NAME);
         $eigenschapObjects = [];
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results'];
+            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getUri()], [$eigenschapEntity->getId()->toString()])['results'];
             if ($eigenschappen !== []) {
                 $this->logger->debug('Property has been found, connecting to property');
 
@@ -150,7 +150,7 @@ class SimXMLToZGWService
                 $this->logger->debug('No existing property found, creating new property');
 
                 $eigenschapObject                     = new ObjectEntity($eigenschapEntity);
-                $eigenschap['eigenschap']['zaaktype'] = $zaakType;
+                $eigenschap['eigenschap']['zaaktype'] = $zaakType->getUri();
 
                 $eigenschapObject->hydrate($eigenschap['eigenschap']);
                 $this->entityManager->persist($eigenschapObject);
@@ -186,7 +186,7 @@ class SimXMLToZGWService
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
         foreach ($zaakArray['rollen'] as $key => $role) {
-            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$rolTypeEntity->getId()->toString()])['results'];
+            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getUri()], [$rolTypeEntity->getId()->toString()])['results'];
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
@@ -194,7 +194,7 @@ class SimXMLToZGWService
             } else {
                 $this->logger->debug('No existing role type has been found, creating new role type');
                 $rolType                     = new ObjectEntity($rolTypeEntity);
-                $role['roltype']['zaaktype'] = $zaakType->getSelf();
+                $role['roltype']['zaaktype'] = $zaakType->getUri();
                 $rolType->hydrate($role['roltype']);
 
                 $this->entityManager->persist($rolType);
