@@ -150,11 +150,14 @@ class SimXMLToZGWService
                 $this->logger->debug('No existing property found, creating new property');
 
                 $eigenschapObject                     = new ObjectEntity($eigenschapEntity);
-                $eigenschap['eigenschap']['zaaktype'] = $zaakType->getSelf();
-                $eigenschapObject->hydrate($eigenschap['eigenschap']);
+                $eigenschap['eigenschap']['zaaktype'] = $zaakType;
 
+                $eigenschapObject->hydrate($eigenschap['eigenschap']);
                 $this->entityManager->persist($eigenschapObject);
                 $this->entityManager->flush();
+                $this->entityManager->flush();
+                $this->cacheService->cacheObject($eigenschapObject);
+
                 $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
             }//end if
         }//end foreach
@@ -341,9 +344,10 @@ class SimXMLToZGWService
 
         $zaakArray = $this->mappingService->mapping($mapping, $this->data['body']);
 
-//        $zaakArray = $this->unescapeEigenschappen($zaakArray);
 
-//        $zaakArray = $this->convertZaakType($zaakArray);
+        $zaakArray = $this->unescapeEigenschappen($zaakArray);
+
+        $zaakArray = $this->convertZaakType($zaakArray);
 
         $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
         if ($zaken === []) {
@@ -354,25 +358,21 @@ class SimXMLToZGWService
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
             $this->data['object'] = $zaak->toArray();
-//            $zaakArray            = $this->connectZaakInformatieObjecten($zaakArray, $zaak);
+            $zaakArray            = $this->connectZaakInformatieObjecten($zaakArray, $zaak);
 
             $this->logger->info('Created case with identifier '.$zaakArray['identificatie']);
             $mappingOut             = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZgwZaakToBv03'], $this::PLUGIN_NAME);
-            $data['response'] = new Response(
-                \Safe\json_encode($zaakArray),
-                201,
-                ['content-type' => 'application/json']
-            );
-//            $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
+
+            $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
 
         } else {
-            $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
-            $data['response'] = new Response(
-                'The case with id '.$zaakArray['identificatie'].' already exists',
-                400,
-                ['content-type' => 'application/json']
-            );
-//            $this->data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
+//            $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
+//            $data['response'] = new Response(
+//                'The case with id '.$zaakArray['identificatie'].' already exists',
+//                400,
+//                ['content-type' => 'application/json']
+//            );
+            $this->data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
 
         }//end if
 
