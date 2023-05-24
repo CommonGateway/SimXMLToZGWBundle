@@ -1,12 +1,16 @@
-# CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService
+# CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService  
 
 This class handles the interaction with componentencatalogus.commonground.nl.
+
+
+
+
 
 ## Methods
 
 | Name | Description |
 |------|-------------|
-|[\_\_construct](#simxmltozgwservice__construct)||
+|[__construct](#simxmltozgwservice__construct)||
 |[connectEigenschappen](#simxmltozgwserviceconnecteigenschappen)|Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap.|
 |[connectRolTypes](#simxmltozgwserviceconnectroltypes)|Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role.|
 |[connectZaakInformatieObjecten](#simxmltozgwserviceconnectzaakinformatieobjecten)|Connects ZaakInfromatieObjecten .|
@@ -15,13 +19,20 @@ This class handles the interaction with componentencatalogus.commonground.nl.
 |[unescapeEigenschappen](#simxmltozgwserviceunescapeeigenschappen)|Unescapes dots in eigenschap-names and definition.|
 |[zaakActionHandler](#simxmltozgwservicezaakactionhandler)|Receives a case and maps it to a ZGW case.|
 
-### SimXMLToZGWService::\_\_construct
+
+
+
+### SimXMLToZGWService::__construct  
 
 **Description**
 
 ```php
  __construct (void)
 ```
+
+ 
+
+ 
 
 **Parameters**
 
@@ -31,9 +42,11 @@ This class handles the interaction with componentencatalogus.commonground.nl.
 
 `void`
 
+
 <hr />
 
-### SimXMLToZGWService::connectEigenschappen
+
+### SimXMLToZGWService::connectEigenschappen  
 
 **Description**
 
@@ -41,22 +54,28 @@ This class handles the interaction with componentencatalogus.commonground.nl.
 public connectEigenschappen (array $zaakArray, \ObjectEntity $zaakType)
 ```
 
-Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap.
+Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap. 
+
+ 
 
 **Parameters**
 
-*   `(array) $zaakArray`
-    : The mapped zaak
-*   `(\ObjectEntity) $zaakType`
-    : The zaakType to connect
+* `(array) $zaakArray`
+: The mapped zaak  
+* `(\ObjectEntity) $zaakType`
+: The zaakType to connect  
 
 **Return Values**
 
 `array`
 
+
+
+
 <hr />
 
-### SimXMLToZGWService::connectRolTypes
+
+### SimXMLToZGWService::connectRolTypes  
 
 **Description**
 
@@ -64,22 +83,28 @@ Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect 
 public connectRolTypes (array $zaakArray, \ObjectEntity $zaakType)
 ```
 
-Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role.
+Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role. 
+
+ 
 
 **Parameters**
 
-*   `(array) $zaakArray`
-    : The mapped zaak
-*   `(\ObjectEntity) $zaakType`
-    : The zaakType to connect
+* `(array) $zaakArray`
+: The mapped zaak  
+* `(\ObjectEntity) $zaakType`
+: The zaakType to connect  
 
 **Return Values**
 
 `array`
 
+
+
+
 <hr />
 
-### SimXMLToZGWService::connectZaakInformatieObjecten
+
+### SimXMLToZGWService::connectZaakInformatieObjecten  
 
 **Description**
 
@@ -87,23 +112,27 @@ Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existi
 public connectZaakInformatieObjecten (array $zaakArray, \ObjectEntity $zaak)
 ```
 
-Connects ZaakInfromatieObjecten .
+Connects ZaakInfromatieObjecten . 
 
-.. @TODO
+.. @TODO 
 
 **Parameters**
 
-*   `(array) $zaakArray`
-    : The mapped zaak
-*   `(\ObjectEntity) $zaak`
+* `(array) $zaakArray`
+: The mapped zaak  
+* `(\ObjectEntity) $zaak`
 
 **Return Values**
 
 `array`
 
+
+
+
 <hr />
 
-### SimXMLToZGWService::convertZaakType
+
+### SimXMLToZGWService::convertZaakType  
 
 **Description**
 
@@ -111,20 +140,26 @@ Connects ZaakInfromatieObjecten .
 public convertZaakType (array $zaakArray)
 ```
 
-Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists.
+Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists. 
+
+ 
 
 **Parameters**
 
-*   `(array) $zaakArray`
-    : The mapped case
+* `(array) $zaakArray`
+: The mapped case  
 
 **Return Values**
 
 `array`
 
+
+
+
 <hr />
 
-### SimXMLToZGWService::createResponse
+
+### SimXMLToZGWService::createResponse  
 
 **Description**
 
@@ -132,22 +167,28 @@ Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType wi
 public createResponse (array $content, int $status)
 ```
 
-Creates a response based on content.
+Creates a response based on content. 
+
+ 
 
 **Parameters**
 
-*   `(array) $content`
-    : The content to incorporate in the response
-*   `(int) $status`
-    : The status code of the response
+* `(array) $content`
+: The content to incorporate in the response  
+* `(int) $status`
+: The status code of the response  
 
 **Return Values**
 
 `\Response`
 
+
+
+
 <hr />
 
-### SimXMLToZGWService::unescapeEigenschappen
+
+### SimXMLToZGWService::unescapeEigenschappen  
 
 **Description**
 
@@ -155,12 +196,14 @@ Creates a response based on content.
 public unescapeEigenschappen (array $zaakArray)
 ```
 
-Unescapes dots in eigenschap-names and definition.
+Unescapes dots in eigenschap-names and definition. 
+
+ 
 
 **Parameters**
 
-*   `(array) $zaakArray`
-    : The case aray to unescape.
+* `(array) $zaakArray`
+: The case aray to unescape.  
 
 **Return Values**
 
@@ -168,9 +211,11 @@ Unescapes dots in eigenschap-names and definition.
 
 > The unescaped array.
 
+
 <hr />
 
-### SimXMLToZGWService::zaakActionHandler
+
+### SimXMLToZGWService::zaakActionHandler  
 
 **Description**
 
@@ -178,17 +223,23 @@ Unescapes dots in eigenschap-names and definition.
 public zaakActionHandler (array $data, array $configuration)
 ```
 
-Receives a case and maps it to a ZGW case.
+Receives a case and maps it to a ZGW case. 
+
+ 
 
 **Parameters**
 
-*   `(array) $data`
-    : The inbound data for the case
-*   `(array) $configuration`
-    : The configuration for the action
+* `(array) $data`
+: The inbound data for the case  
+* `(array) $configuration`
+: The configuration for the action  
 
 **Return Values**
 
 `array`
 
+
+
+
 <hr />
+
