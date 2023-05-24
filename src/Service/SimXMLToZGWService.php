@@ -8,6 +8,7 @@ use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Event\ActionEvent;
 use CommonGateway\CoreBundle\Service\CacheService;
+use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -140,7 +141,7 @@ class SimXMLToZGWService
         $eigenschapEntity  = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcEigenschap'], $this::PLUGIN_NAME);
         $eigenschapObjects = [];
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results'];
+            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getUri()], [$eigenschapEntity->getId()->toString()])['results'];
             if ($eigenschappen !== []) {
                 $this->logger->debug('Property has been found, connecting to property');
 
@@ -149,11 +150,14 @@ class SimXMLToZGWService
                 $this->logger->debug('No existing property found, creating new property');
 
                 $eigenschapObject                     = new ObjectEntity($eigenschapEntity);
-                $eigenschap['eigenschap']['zaaktype'] = $zaakType->getSelf();
-                $eigenschapObject->hydrate($eigenschap['eigenschap']);
+                $eigenschap['eigenschap']['zaaktype'] = $zaakType->getUri();
 
+                $eigenschapObject->hydrate($eigenschap['eigenschap']);
                 $this->entityManager->persist($eigenschapObject);
                 $this->entityManager->flush();
+                $this->entityManager->flush();
+                $this->cacheService->cacheObject($eigenschapObject);
+
                 $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
             }//end if
         }//end foreach
@@ -182,7 +186,7 @@ class SimXMLToZGWService
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
         foreach ($zaakArray['rollen'] as $key => $role) {
-            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$rolTypeEntity->getId()->toString()])['results'];
+            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getUri()], [$rolTypeEntity->getId()->toString()])['results'];
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
@@ -190,7 +194,7 @@ class SimXMLToZGWService
             } else {
                 $this->logger->debug('No existing role type has been found, creating new role type');
                 $rolType                     = new ObjectEntity($rolTypeEntity);
-                $role['roltype']['zaaktype'] = $zaakType->getSelf();
+                $role['roltype']['zaaktype'] = $zaakType->getUri();
                 $rolType->hydrate($role['roltype']);
 
                 $this->entityManager->persist($rolType);
@@ -340,6 +344,7 @@ class SimXMLToZGWService
 
         $zaakArray = $this->mappingService->mapping($mapping, $this->data['body']);
 
+
         $zaakArray = $this->unescapeEigenschappen($zaakArray);
 
         $zaakArray = $this->convertZaakType($zaakArray);
@@ -357,10 +362,12 @@ class SimXMLToZGWService
 
             $this->logger->info('Created case with identifier '.$zaakArray['identificatie']);
             $mappingOut             = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZgwZaakToBv03'], $this::PLUGIN_NAME);
+
             $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
+
         } else {
-            $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
             $this->data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
+
         }//end if
 
         return $this->data;
