@@ -6,7 +6,7 @@
   "passTrough": false,
   "mapping": {
     "betrokkeneType": "{% if METADATA.INDIENERSOORT == 'burger' %}natuurlijk_persoon{% elseif METADATA.INDIENERSOORT == 'vestiging' %}vestiging{% endif %}",
-    "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
+    "roltype": "{{ map('https://simxml.nl/mapping/simxml.heeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
     "roltoelichting": "initiator",
     "betrokkeneIdentificatie.inpBsn": "{% if METADATA.INDIENERSOORT == 'burger' %}{{METADATA.INDIENER}}{% else %}betrokkeneIdentificatie.inpBsn{% endif %}",
     "betrokkeneIdentificatie.geslachtsnaam": "{% if METADATA.INDIENERSOORT == 'burger' %}{{ELEMENTEN.ACHTERNAAM}}{% else %}betrokkeneIdentificatie.geslachtsnaam{% endif %}",
