@@ -364,6 +364,7 @@ class SimXMLToZGWService
 
             $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
         } else {
+            $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
             $this->data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
         }//end if
 
