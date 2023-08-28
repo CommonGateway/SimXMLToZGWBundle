@@ -20,7 +20,7 @@
     "schemas": [
       {
         "$id": "https://dowr.simxml.nl/endpoint/simxml.endpoint.json",
-        "reference": "https://vng.opencatalogi.nl/schemas/simxml.zrc.zaak.schema.json",
+        "reference": "https://simxml.vrijBRP.nl/schemas/simxml.zrc.zaak.schema.json",
         "path": "simxml",
         "methods": [
           "POST"
