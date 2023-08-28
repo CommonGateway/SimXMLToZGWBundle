@@ -10,6 +10,7 @@ use CommonGateway\SimXMLToZGWBundle\Service\SimXMLToZGWService;
  */
 class SimXmlZaakActionHandler implements ActionHandlerInterface
 {
+
     /**
      * The Sim XML to ZGW service used by the handler
      *
@@ -17,13 +18,16 @@ class SimXmlZaakActionHandler implements ActionHandlerInterface
      */
     private SimXmlToZgwService $simXmlToZgwService;
 
+
     /**
      * @param SimXmlToZgwService $simXmlToZgwService The Sim XML to ZGW service
      */
     public function __construct(SimXmlToZgwService $simXmlToZgwService)
     {
         $this->simXmlToZgwService = $simXmlToZgwService;
+
     }//end __construct()
+
 
     /**
      *  Returns the required configuration as a https://json-schema.org array.
@@ -40,7 +44,9 @@ class SimXmlZaakActionHandler implements ActionHandlerInterface
             'required'    => [],
             'properties'  => [],
         ];
+
     }//end getConfiguration()
+
 
     /**
      * This function runs the service.
@@ -55,5 +61,8 @@ class SimXmlZaakActionHandler implements ActionHandlerInterface
     public function run(array $data, array $configuration): array
     {
         return $this->simXmlToZgwService->zaakActionHandler($data, $configuration);
+
     }//end run()
-}
+
+
+}//end class
