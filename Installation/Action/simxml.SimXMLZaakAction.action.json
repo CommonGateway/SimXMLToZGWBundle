@@ -1,0 +1,22 @@
+{
+  "title": "SimXMLZaakAction",
+  "$id": "https://simxml.nl/action/simxml.SimXMLZaakAction.action.json",
+  "$schema": "https://docs.commongateway.nl/schemas/ActionHandler.schema.json",
+  "version": "0.0.2",
+  "listens": [
+    "xml.inbound"
+  ],
+  "throws": [
+    "simxml.zaak.created",
+    "simxml.document.created"
+  ],
+  "conditions": {
+    "==": [
+      {"var": "SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:OntvangenIntakeNotificatie"}
+    ]
+  },
+  "class": "CommonGateway\\SimXMLToZGWBundle\\ActionHandler\\SimXmlZaakActionHandler",
+  "configuration": [],
+  "isLockable": false,
+  "isEnabled": true
+}
