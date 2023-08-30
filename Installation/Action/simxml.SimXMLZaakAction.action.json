@@ -1,7 +1,7 @@
 {
   "title": "SimXMLZaakAction",
   "$id": "https://simxml.nl/action/simxml.SimXMLZaakAction.action.json",
-  "$schema": "https://docs.commongateway.nl/schemas/ActionHandler.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Action.schema.json",
   "version": "0.0.2",
   "listens": [
     "xml.inbound"
@@ -11,8 +11,9 @@
     "simxml.document.created"
   ],
   "conditions": {
-    "==": [
-      {"var": "SOAP-ENV:Envelope.SOAP-ENV:Body.ns2:OntvangenIntakeNotificatie"}
+    "!!": [
+      {"var": "body.SOAP-ENV:Body.ns2:OntvangenIntakeNotificatie"},
+      []
     ]
   },
   "class": "CommonGateway\\SimXMLToZGWBundle\\ActionHandler\\SimXmlZaakActionHandler",
