@@ -1,7 +1,7 @@
 {
   "$id": "https://simxml.vrijBRP.nl/schemas/simxml.zrc.zaak.schema.json",
   "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "title": "Zaak",
   "type": "object",
   "properties": {
@@ -294,11 +294,5 @@
     "referentienummer": {
       "type": "string"
     }
-  },
-  "required": [
-    "zaaktype",
-    "registratiedatum",
-    "verantwoordelijkeOrganisatie",
-    "startdatum"
-  ]
+  }
 }
