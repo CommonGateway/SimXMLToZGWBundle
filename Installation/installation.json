@@ -1,35 +1,20 @@
 {
     "installationService": "CommonGateway\\SimXMLToZGWBundle\\Service\\InstallationService",
-    "actions": {
-      "handlers": [
+    "endpoints": {
+      "schemas": [
         {
-          "reference": "https://simxml.nl/action/simxml.simxmlZaakToZgwZaakAction.action.json",
-          "actionHandler": "CommonGateway\\SimXMLToZGWBundle\\ActionHandler\\SimXmlZaakActionHandler",
-          "listens": [
-            "xml.inbound"
+          "$id": "https://dowr.simxml.nl/endpoint/simxml.endpoint.json",
+          "reference": "https://simxml.vrijBRP.nl/schemas/simxml.zrc.zaak.schema.json",
+          "path": "simxml",
+          "defaultContentType": "text/xml",
+          "methods": [
+            "POST"
           ],
           "throws": [
-            "simxml.zaak.created",
-            "simxml.document.created"
+            "xml.inbound"
           ],
-          "version": "0.0.1"
+          "version": "0.0.4"
         }
       ]
-    },
-  "endpoints": {
-    "schemas": [
-      {
-        "$id": "https://dowr.simxml.nl/endpoint/simxml.endpoint.json",
-        "reference": "https://vng.opencatalogi.nl/schemas/simxml.zrc.zaak.schema.json",
-        "path": "simxml",
-        "methods": [
-          "POST"
-        ],
-        "throws": [
-          "xml.inbound"
-        ],
-        "version": "0.0.2"
-      }
-    ]
-  }
+    }
 }

@@ -344,7 +344,6 @@ class SimXMLToZGWService
 
         $zaakArray = $this->mappingService->mapping($mapping, $this->data['body']);
 
-
         $zaakArray = $this->unescapeEigenschappen($zaakArray);
 
         $zaakArray = $this->convertZaakType($zaakArray);
@@ -361,13 +360,12 @@ class SimXMLToZGWService
             $zaakArray            = $this->connectZaakInformatieObjecten($zaakArray, $zaak);
 
             $this->logger->info('Created case with identifier '.$zaakArray['identificatie']);
-            $mappingOut             = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZgwZaakToBv03'], $this::PLUGIN_NAME);
+            $mappingOut = $this->resourceService->getMapping($this::MAPPING_REFS['SimxmlZgwZaakToBv03'], $this::PLUGIN_NAME);
 
             $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
-
         } else {
+            $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
             $this->data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
-
         }//end if
 
         return $this->data;

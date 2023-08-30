@@ -2,11 +2,11 @@
   "title": "SimxmlToRol",
   "$id": "https://simxml.nl/mapping/simxml.simxmlToRol.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "passTrough": false,
   "mapping": {
     "betrokkeneType": "{% if METADATA.INDIENERSOORT == 'burger' %}natuurlijk_persoon{% elseif METADATA.INDIENERSOORT == 'vestiging' %}vestiging{% endif %}",
-    "roltype": "{{ map('https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
+    "roltype": "{{ map('https://simxml.nl/mapping/simxml.heeftAlsInitiatorToRolType.mapping.json', _context) | json_encode }}",
     "roltoelichting": "initiator",
     "betrokkeneIdentificatie.inpBsn": "{% if METADATA.INDIENERSOORT == 'burger' %}{{METADATA.INDIENER}}{% else %}betrokkeneIdentificatie.inpBsn{% endif %}",
     "betrokkeneIdentificatie.geslachtsnaam": "{% if METADATA.INDIENERSOORT == 'burger' %}{{ELEMENTEN.ACHTERNAAM}}{% else %}betrokkeneIdentificatie.geslachtsnaam{% endif %}",
