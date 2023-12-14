@@ -93,7 +93,7 @@ nl:
   commonground:
     intendedOrganisations: []
     installationType: null
-    layerType: data
+    layerType: integration
   gemma:
     bedrijfsfuncties: []
     bedrijfsservices: []
