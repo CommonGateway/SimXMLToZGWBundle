@@ -20,7 +20,7 @@ description:
     localisedName: null
     genericName: This bundle contains the necessary logic for converting Sim xml to ZGW.
     shortDescription: SimXMLToZGWBundle
-    longDescription: null
+    longDescription: This bundle contains the necessary logic for converting Sim xml to ZGW.
     documentation: null
     apiDocumentation: null
     features: []
@@ -31,7 +31,7 @@ description:
     localisedName: null
     genericName: Deze bundle bevat de benodigde logica voor het omzetten van Sim xml naar ZGW.
     shortDescription: SimXMLToZGWBundle
-    longDescription: null
+    longDescription: Deze bundle bevat de benodigde logica voor het omzetten van Sim xml naar ZGW.
     documentation: null
     apiDocumentation: null
     features: []
