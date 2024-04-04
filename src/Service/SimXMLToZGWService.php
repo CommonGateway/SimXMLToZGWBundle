@@ -310,6 +310,7 @@ class SimXMLToZGWService
      */
     public function unescapeEigenschappen(array $zaakArray): array
     {
+        // Remember the ; after &#46
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
             $eigenschap['naam']                    = str_replace(['&#46;', '&amp;#46;', '&amp;amp;#46;'], ['.', '.', '.'], $eigenschap['naam']);
             $eigenschap['eigenschap']['naam']      = str_replace(['&#46;', '&amp;#46;', '&amp;amp;#46;'], ['.', '.', '.'], $eigenschap['eigenschap']['naam']);
