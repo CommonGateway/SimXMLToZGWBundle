@@ -334,7 +334,6 @@ class SimXMLToZGWService
     }//end unescapeEigenschappen()
 
 
-
     /**
      * Generates a download endpoint from the id of an 'Enkelvoudig Informatie Object' and the endpoint for downloads.
      *
@@ -395,6 +394,7 @@ class SimXMLToZGWService
 
     }//end createFile()
 
+
     /**
      * Creates or updates a file associated with a given ObjectEntity instance.
      *
@@ -445,6 +445,7 @@ class SimXMLToZGWService
 
     }//end createOrUpdateFile()
 
+
     /**
      * Creates an enkelvoudiginformatieobject with an informatieobjecttype.
      * Creates a zaakinformatieobject with the zaak and created enkelvoudiginformatieobject
@@ -457,7 +458,7 @@ class SimXMLToZGWService
      */
     public function createDocuments(array $zaakDocumentArray, ObjectEntity $zaak): ?ObjectEntity
     {
-        $caseInfoObjectSchema = $this->resourceService->getSchema('https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json', 'common-gateway/zds-to-zgw-bundle');
+        $caseInfoObjectSchema          = $this->resourceService->getSchema('https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json', 'common-gateway/zds-to-zgw-bundle');
         $singleInformationObjectSchema = $this->resourceService->getSchema('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json', 'common-gateway/zds-to-zgw-bundle');
         if ($caseInfoObjectSchema === null) {
             return null;
@@ -466,11 +467,9 @@ class SimXMLToZGWService
         // Enkelvoudiginformatieobject
         $informatieobject = new ObjectEntity($singleInformationObjectSchema);
 
-//        var_dump($zaakDocumentArray['informatieobject']);
-
+        // var_dump($zaakDocumentArray['informatieobject']);
         $informatieobject->hydrate($zaakDocumentArray['informatieobject']);
         $this->entityManager->persist($informatieobject);
-
 
         $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
         $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
@@ -520,13 +519,13 @@ class SimXMLToZGWService
         if ($zaken === []) {
             $zaak = new ObjectEntity($zaakEntity);
 
-            $zaakDocuments = $zaakArray['zaakinformatieobjecten'];
+            $zaakDocuments                       = $zaakArray['zaakinformatieobjecten'];
             $zaakArray['zaakinformatieobjecten'] = [];
 
             foreach ($zaakDocuments as $zaakDocumentArray) {
                 $zaakArray['zaakinformatieobjecten'][] = $this->createDocuments($zaakDocumentArray, $zaak);
-
             }
+
             $this->logger->debug('Creating new case with identifier'.$zaakArray['identificatie']);
 
             $zaak->hydrate($zaakArray);
