@@ -8,7 +8,6 @@ use App\Entity\Entity;
 use App\Entity\File;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
-use App\Entity\Value;
 use App\Event\ActionEvent;
 use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
@@ -360,13 +359,7 @@ class SimXMLToZGWService
 
 
     /**
-     * Creates or updates a file associated with a given ObjectEntity instance.
-     *
-     * This method handles the logic for creating or updating a file based on
-     * provided data. If an existing file is associated with the ObjectEntity,
-     * it updates the file's properties; otherwise, it creates a new file.
-     * It also sets the response data based on the method used (POST or other)
-     * and if the `$setResponse` parameter is set to `true`.
+     * Creates a new file for storing attachment contents if the createOrUpdateFile decides it should use a new file.
      *
      * @param ObjectEntity $objectEntity The object entity associated with the file.
      * @param array        $data         Data associated with the file such as title, format, and content.
