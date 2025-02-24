@@ -9,6 +9,7 @@ use App\Entity\File;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use App\Event\ActionEvent;
+use App\Service\ApplicationService;
 use CommonGateway\CoreBundle\Service\CacheService;
 use CommonGateway\CoreBundle\Service\GatewayResourceService;
 use CommonGateway\CoreBundle\Service\MappingService;
@@ -105,7 +106,8 @@ class SimXMLToZGWService
         MappingService $mappingService,
         CacheService $cacheService,
         LoggerInterface $actionLogger,
-        ParameterBagInterface $parameterBag
+        ParameterBagInterface $parameterBag,
+        private ApplicationService $applicationService
     ) {
         $this->entityManager   = $entityManager;
         $this->resourceService = $resourceService;
@@ -151,7 +153,7 @@ class SimXMLToZGWService
         $eigenschapEntity  = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcEigenschap'], $this::PLUGIN_NAME);
         $eigenschapObjects = [];
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getUri()], [$eigenschapEntity->getId()->toString()])['results'];
+            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getUri(), '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$eigenschapEntity->getId()->toString()])['results'];
             if ($eigenschappen !== []) {
                 $this->logger->debug('Property has been found, connecting to property');
 
@@ -196,7 +198,7 @@ class SimXMLToZGWService
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
         foreach ($zaakArray['rollen'] as $key => $role) {
-            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getUri()], [$rolTypeEntity->getId()->toString()])['results'];
+            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getUri(), '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$rolTypeEntity->getId()->toString()])['results'];
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
@@ -240,11 +242,11 @@ class SimXMLToZGWService
         $documentEntity     = $this->resourceService->getSchema($this::SCHEMA_REFS['DrcEnkelvoudigInformatieObject'], $this::PLUGIN_NAME);
         $mapping            = $this->resourceService->getMapping($this::MAPPING_REFS['ZdsDocumentToZgwDocument'], $this::PLUGIN_NAME);
 
-        $zaken                  = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
+        $zaken                  = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie'], '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$zaakEntity->getId()->toString()])['results'];
         $zaakinformatieobjecten = $zaak->getValue('zaakinformatieobjecten');
 
         foreach ($zaakinformatieobjecten as $key => $zaakInformatieObject) {
-            $documenten = $this->cacheService->searchObjects(null, ['identificatie' => $zaakInformatieObject->getValue('informatieobject')->getValue('identificatie')], [$documentEntity->getId()->toString()])['results'];
+            $documenten = $this->cacheService->searchObjects(null, ['identificatie' => $zaakInformatieObject->getValue('informatieobject')->getValue('identificatie'), '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$documentEntity->getId()->toString()])['results'];
 
             if ($documenten !== []) {
                 $this->logger->debug('Populating document with identification'.$zaakInformatieObject->getValue('informatieobject')->getValue('identificatie'));
@@ -283,7 +285,7 @@ class SimXMLToZGWService
         $this->logger->debug('Trying to connect case to existing case type');
 
         $zaakTypeEntity = $this->resourceService->getSchema($this::SCHEMA_REFS['ZtcZaakType'], $this::PLUGIN_NAME);
-        $zaaktypes      = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$zaakTypeEntity->getId()->toString()])['results'];
+        $zaaktypes      = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie'], '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$zaakTypeEntity->getId()->toString()])['results'];
         if (count($zaaktypes) > 0) {
             $this->logger->debug('Case type found, connecting case to case type');
 
@@ -508,7 +510,7 @@ class SimXMLToZGWService
 
         $zaakArray = $this->convertZaakType($zaakArray);
 
-        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
+        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie'], '_self.organization.id' => $this->applicationService->getApplication()->getOrganization()->getId()->toString()], [$zaakEntity->getId()->toString()])['results'];
         if ($zaken === []) {
             $zaak = new ObjectEntity($zaakEntity);
 
